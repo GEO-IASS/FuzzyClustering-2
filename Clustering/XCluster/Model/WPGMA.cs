@@ -10,8 +10,9 @@ namespace XCluster.Model
     {
         private List<int>[] _clusters;
         public double[][] Data { get; private set; }
-        private double[][] distanceMatrix;
         public double ClusteringMark { get; private set; }
+        public int ClusterCount { get; private set; }
+        private double[][] distanceMatrix;
 
         public WPGMA(double[][] data)
         {
@@ -108,7 +109,23 @@ namespace XCluster.Model
                 result.Add(clusterSet);
             }
             ClusteringMark = GetClusteringMark();
+            ClusterCount = n;
             return result;
+        }
+
+        public HashSet<HashSet<double[]>> GetClusters()
+        {
+            var bestClusterCount = 1;
+            var bestClusteringMark = 0.0;
+            for (var i = 1; i < Data.Length + 1; i++)
+            {
+                GetClusters(i);
+                if (!(bestClusteringMark < ClusteringMark)) continue;
+                bestClusteringMark = ClusteringMark;
+                bestClusterCount = i;
+            }
+
+            return GetClusters(bestClusterCount);
         }
 
         private void UnionClaster(int x, int y)

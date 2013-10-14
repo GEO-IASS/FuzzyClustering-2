@@ -35,8 +35,8 @@ namespace XCluster
         public App()
         {
             var c = new WPGMA(Data);
-            var result = c.GetClusters(2);
-            MessageBox.Show(c.ClusteringMark.ToString());
+            var result = c.GetClusters();
+            MessageBox.Show(c.ClusterCount.ToString());
         }
         
     }

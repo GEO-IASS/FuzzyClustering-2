@@ -9,7 +9,7 @@ namespace XCluster.Model
     public static class Distance
     {
 
-        public static double[][] GetEvklidDistance(double[][] data)
+        public static double[][] GetEuclideanDistance(double[][] data)
         {
             var count = data.Length;
             var dimentionCount = data[0].Length;
@@ -32,7 +32,7 @@ namespace XCluster.Model
             return result;
         }
 
-        public static double[][] GetSquqreEvklidDistance(double[][] data)
+        public static double[][] GetSquqreEuclideanDistance(double[][] data)
         {
             var count = data.Length;
             var dimentionCount = data[0].Length;

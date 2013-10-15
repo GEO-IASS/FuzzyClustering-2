@@ -40,6 +40,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -71,6 +72,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\ClusterCentroid.cs" />
+    <Compile Include="Model\ClusterPoint.cs" />
+    <Compile Include="Model\CMeans.cs" />
     <Compile Include="Model\Distance.cs" />
     <Compile Include="Model\WPGMA.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

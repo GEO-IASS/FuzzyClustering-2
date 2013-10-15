@@ -91,7 +91,7 @@ namespace XCluster.Model
             {
                 _clusters[i] = new List<int> { i };
             }
-            distanceMatrix = Distance.GetSquqreEvklidDistance(Data);
+            distanceMatrix = Distance.GetSquqreEuclideanDistance(Data);
             var tempData = distanceMatrix;
             while (_clusters.Length > n)
             {

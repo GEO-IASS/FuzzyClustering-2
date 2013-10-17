@@ -11,12 +11,14 @@ namespace XCluster.Model
 {
     class CMeans
     {
-        
-
         /// <summary>
         /// Array containing all points used by the algorithm
         /// </summary>
         private List<ClusterPoint> Points;
+
+        public int MaxIterations { get; set; }
+
+        public double Accuracy { get; set; }
 
         /// <summary>
         /// Array containing all clusters handled by the algorithm
@@ -27,12 +29,12 @@ namespace XCluster.Model
         /// Array containing all clusters membership value of all points to each cluster
         /// Fuzzy  rules state that the sum of the membership of a point to all clusters must be 1
         /// </summary>
-        public double[,] U;
+        public double[][] U;
 
         public double[][] Data;
+
         private bool isConverged = false;
-        //private double[][] processedImage;
-        //public double[][] getProcessedImage { get { return processedImage; } }
+
         public bool Converged { get { return isConverged; } }
 
         /// <summary>
@@ -49,7 +51,6 @@ namespace XCluster.Model
         /// Gets or sets objective function
         /// </summary>
         public double J { get; set; }
-
    
         /// <summary>
         /// Initialize the algorithm with points and initial clusters
@@ -59,56 +60,22 @@ namespace XCluster.Model
         /// <param name="fuzzy">The fuzzyness factor to be used, constant</param>
         /// <param name="myImage">A working image, so that the GUI working image can be updated</param>
         /// <param name="numCluster">The number of clusters requested by the user from the GUI</param>
-        public CMeans(List<ClusterPoint> points, List<ClusterCentroid> clusters, float fuzzy, double[][] data)
+        public CMeans(double[][] data)
         {
-            if (points == null)
-            {
-                throw new ArgumentNullException("points");
-            }
-
-            if (clusters == null)
-            {
-                throw new ArgumentNullException("clusters");
-            }
-
-
-           // processedImage = myImage;
- 
-
-            this.Points = points;
-            this.Clusters = clusters;
-            //this.myImageHeight = myImage.Length;
-            //this.myImageWidth = myImage.Rank;
+            this.MaxIterations = 10;
+            this.Accuracy = 0.04;
+            this.Fuzzyness = 2;
             this.Data = data;
-
-            U = new double[this.Points.Count, this.Clusters.Count];
-            this.Fuzzyness = fuzzy;
-
-            double diff;
-
-            // Iterate through all points to create initial U matrix
-            for (var i = 0; i < this.Points.Count; i++)
-            {
-                ClusterPoint p = this.Points[i];
-                var sum = 0.0;
-
-                for (var j = 0; j < this.Clusters.Count; j++)
-                {
-                    ClusterCentroid c = this.Clusters[j];
-                    diff = Math.Sqrt(Math.Pow(CalculateEuclideanDistance(p, c), 2.0));
-                    U[i, j] = (diff == 0) ? Eps : diff;
-                    sum += U[i, j];
-                }
-             }
-
-            this.RecalculateClusterMembershipValues();
+            this.Points = ConvertToClusterPoints(data);
+            
         }
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private CMeans()
+        public CMeans(List<ClusterPoint> points)
         {
+            this.MaxIterations = 10;
+            this.Accuracy = 0.04;
+            this.Fuzzyness = 2;
+            this.Points = points;
         }
 
         /// <summary>
@@ -128,37 +95,36 @@ namespace XCluster.Model
                //Normalize the entries
                for (var j = 0; j < this.Clusters.Count; j++)
                {
-                   max = U[i, j] > max ? U[i, j] : max;
-                   min = U[i, j] < min ? U[i, j] : min;
+                   max = U[i][j] > max ? U[i][j] : max;
+                   min = U[i][j] < min ? U[i][j] : min;
                }
                //Sets the values to the normalized values between 0 and 1
                for (var j = 0; j < this.Clusters.Count; j++)
                {
-                   U[i, j] = (U[i, j] - min) / (max - min);
-                   sum += U[i, j];
+                   U[i][j] = (U[i][j] - min) / (max - min);
+                   sum += U[i][j];
                }
                //Makes it so that the sum of all values is 1 
                for (var j = 0; j < this.Clusters.Count; j++)
                {
-                   U[i, j] = U[i, j] / sum;
-                   if (double.IsNaN(U[i, j]))
+                   U[i][j] = U[i][j] / sum;
+                   if (double.IsNaN(U[i][j]))
                    {
                        ///Console.WriteLine("NAN value: point({0}) cluster({1}) sum {2} newmax {3}", i, j, sum, newmax);
-                       U[i, j] = 0.0;
+                       U[i][j] = 0.0;
                    }
                    //Console.WriteLine("ClusterIndex: point({0}) cluster({1}) min {2} max {3} value {4} p.ClusterIndex {5}", i, j, min, max, U[i, j], p.ClusterIndex);
-                   newmax = U[i, j] > newmax ? U[i, j] : newmax;
+                   newmax = U[i][j] > newmax ? U[i][j] : newmax;
                }
                // ClusterIndex is used to store the strongest membership value to a cluster, used for defuzzification
                 p.ClusterIndex = newmax;
              }
         }
-
  
         /// <summary>
         /// Perform one step of the algorithm
         /// </summary>
-        public void Step()
+        private void Step()
         {
             for (var c = 0; c < Clusters.Count; c++)
             {
@@ -178,7 +144,7 @@ namespace XCluster.Model
  
                     }
                     // Then the membership value can be calculated as...
-                    U[h, c] = (double)(1.0 / Math.Pow(sumTerms, (2 / (this.Fuzzyness - 1)))); 
+                    U[h][c] = (double)(1.0 / Math.Pow(sumTerms, (2 / (this.Fuzzyness - 1)))); 
                 }
             }
 
@@ -195,19 +161,18 @@ namespace XCluster.Model
         private double CalculateEuclideanDistance(ClusterPoint p, ClusterCentroid c)
         {
             var sum = 0.0;
-            for (int i = 0; i < p.PixelColor.Length; i++)
+            for (int i = 0; i < p.Data.Length; i++)
             {
-                sum += (p.PixelColor[i] - c.PixelColor[i])*(p.PixelColor[i] - c.PixelColor[i]);
+                sum += (p.Data[i] - c.Data[i])*(p.Data[i] - c.Data[i]);
             }
             return Math.Sqrt(sum);
         }
-
  
         /// <summary>
         /// Calculate the objective function
         /// </summary>
         /// <returns>The objective function as double value</returns>
-        public double CalculateObjectiveFunction()
+        private double CalculateObjectiveFunction()
         {
             double Jk = 0.0;
 
@@ -215,7 +180,7 @@ namespace XCluster.Model
             {
                 for (var j = 0; j < this.Clusters.Count; j++)
                 {
-                    Jk += Math.Pow(U[i, j], this.Fuzzyness) * Math.Pow(this.CalculateEuclideanDistance(Points[i], Clusters[j]), 2);
+                    Jk += Math.Pow(U[i][j], this.Fuzzyness) * Math.Pow(this.CalculateEuclideanDistance(Points[i], Clusters[j]), 2);
                 }
             }
             return Jk;
@@ -224,15 +189,15 @@ namespace XCluster.Model
         /// <summary>
         /// Calculates the centroids of the clusters 
         /// </summary>
-        public void CalculateClusterCentroids()
+        private void CalculateClusterCentroids()
         {
             //Console.WriteLine("Cluster Centroid calculation:");
             for (var j = 0; j < this.Clusters.Count; j++)
             {
                 ClusterCentroid c = this.Clusters[j];
-                double l = 0.0;
+                double l;
                 c.PixelCount = 1;
-                for (int i = 0; i < c.PropertiesSum.Length; i++)
+                for (var i = 0; i < c.PropertiesSum.Length; i++)
                 {
                     c.PropertiesSum[i] = 0;
                 }
@@ -242,31 +207,100 @@ namespace XCluster.Model
                 {
                 
                     ClusterPoint p = this.Points[i];
-                    l = Math.Pow(U[i, j], this.Fuzzyness);
+                    l = Math.Pow(U[i][j], this.Fuzzyness);
                     for (var k = 0;  k < c.PropertiesSum.Length; k++)
                     {
-                        c.PropertiesSum[k] += l * p.PixelColor[k];
+                        c.PropertiesSum[k] += l * p.Data[k];
                     }
                     c.MembershipSum += l;
-                    if (U[i, j] == p.ClusterIndex)
+                    if (U[i][j] == p.ClusterIndex)
                     {
                         c.PixelCount += 1;
                     }
                 }
 
-                for (int i = 0; i < c.PixelColor.Length; i++)
+                for (var i = 0; i < c.Data.Length; i++)
                 {
-                    c.PixelColor[i] = c.PropertiesSum[i]/c.MembershipSum;
+                    c.Data[i] = c.PropertiesSum[i]/c.MembershipSum;
                 }
              }
         }
 
-        /// <summary>
-        /// Perform a complete run of the algorithm until the desired accuracy is achieved.
-        /// For demonstration issues, the maximum Iteration counter is set to 20.
-        /// </summary>
-        /// <param name="accuracy">Algorithm accuracy</param>
-        /// <returns>The number of steps the algorithm needed to complete</returns>
+        public double[][] GetCluters(int clusterCount)
+        {
+            this.Clusters = GenerateCentroids(clusterCount);
 
+            U = new double[this.Points.Count][];
+            for (var i = 0; i < this.Points.Count; i++)
+            {
+                U[i] = new double[clusterCount];
+            }
+
+            double diff;
+            // Iterate through all points to create initial U matrix
+            for (var i = 0; i < this.Points.Count; i++)
+            {
+                ClusterPoint p = this.Points[i];
+                var sum = 0.0;
+
+                for (var j = 0; j < this.Clusters.Count; j++)
+                {
+                    ClusterCentroid c = this.Clusters[j];
+                    diff = Math.Sqrt(Math.Pow(CalculateEuclideanDistance(p, c), 2.0));
+                    U[i][j] = (diff == 0) ? Eps : diff;
+                    sum += U[i][j];
+                }
+            }
+
+            this.RecalculateClusterMembershipValues();
+
+            int k = 0;
+            do
+            {
+                k++;
+                this.J = this.CalculateObjectiveFunction();
+                this.CalculateClusterCentroids();
+                this.Step();
+                double Jnew = this.CalculateObjectiveFunction();
+               
+                if (Math.Abs(this.J - Jnew) < Accuracy) break;
+            }
+            while (MaxIterations > k);
+
+            return this.U;
+        }
+
+        private List<ClusterPoint> ConvertToClusterPoints(double[][] data)
+        {
+            return data.Select(d => new ClusterPoint(d)).ToList();
+        }
+
+        private List<ClusterCentroid> GenerateCentroids(int clusterCount = 2)
+        {
+            var data = Points[0];
+            var result = new List<ClusterCentroid>();
+            var rnd = new Random();
+            for (var i = 0; i < clusterCount; i++)
+            {
+                var point = new double[data.Data.Length];
+                for (var j = 0; j < data.Data.Length; j++)
+                {
+                    point[i] = rnd.NextDouble();
+                }
+                result.Add(new ClusterCentroid(point));
+            }
+            return result;
+        }
+
+        public List<ClusterPoint> GetPointsList()
+        {
+            var result = new List<ClusterPoint>();
+            for (int i = 0; i < Points.Count; i++)
+            {
+                Points[i].Cluster = U[i];
+                result.Add(Points[i]);
+            }
+            return Points;
+        }
     }
 }

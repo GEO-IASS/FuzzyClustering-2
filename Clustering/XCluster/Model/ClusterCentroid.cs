@@ -26,19 +26,23 @@ namespace XCluster.Model
         public double PixelCount { get; set; }
         public double MembershipSum { get; set; }
         public double[] PropertiesSum { get; set; }
-        public double[] PixelColor { get; set; }
-        public double[] OriginalPixelColor { get; set; }
-
-        public ClusterCentroid(double x, double y, double[] col)
+        public double[] Data { get; set; }
+        public double[] OriginalData { get; set; }
+        
+        public ClusterCentroid(double[] data)
         {
-            this.X = x;
-            this.Y = y;
-            this.PropertiesSum = new double[col.Length];
+            this.PropertiesSum = new double[data.Length];
             Array.ForEach(this.PropertiesSum, d => d = 0);
             this.PixelCount = 0;
             this.MembershipSum = 0;
-            this.PixelColor = col;
-            this.OriginalPixelColor = col;
+            this.Data = data;
+            this.OriginalData = data;
+        }
+
+        public ClusterCentroid(double[] data, double x, double y):this(data)
+        {
+            this.X = x;
+            this.Y = y;
         }
     }
 }

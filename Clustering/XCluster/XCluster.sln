@@ -3,14 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCluster", "XCluster.csproj", "{66D2E633-C8CF-4DF6-AE8B-4A640E0749A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZedGraphUserControls", "ZedGraphUserControls\ZedGraphUserControls.csproj", "{C863F3D8-CA71-4240-A28A-A110E3A5E553}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
+		SccNumberOfProjects = 3
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tsamkovskyi.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = XCluster.csproj
 		SccLocalPath1 = .
+		SccProjectUniqueName2 = ZedGraphUserControls\\ZedGraphUserControls.csproj
+		SccProjectName2 = ZedGraphUserControls
+		SccLocalPath2 = ZedGraphUserControls
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +26,10 @@ Global
 		{66D2E633-C8CF-4DF6-AE8B-4A640E0749A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66D2E633-C8CF-4DF6-AE8B-4A640E0749A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66D2E633-C8CF-4DF6-AE8B-4A640E0749A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C863F3D8-CA71-4240-A28A-A110E3A5E553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C863F3D8-CA71-4240-A28A-A110E3A5E553}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C863F3D8-CA71-4240-A28A-A110E3A5E553}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C863F3D8-CA71-4240-A28A-A110E3A5E553}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +9,23 @@ namespace XCluster.Model
 {
     public static class Distance
     {
+        private  static  readonly Lazy<StringCollection> _lazyInitializer = new Lazy<StringCollection>(() => 
+                                                                                        new StringCollection(){
+                                                                                            "Лінійна відстань",
+                                                                                            "Евклідова відстань",
+                                                                                            "Квадратична евклідова відстань",
+                                                                                            "Відстань Мінковського"
+                                                                                        });
 
-        public static double[][] GetEuclideanDistance(double[][] data)
+        public static StringCollection DistanceList
+        {
+            get
+            {
+                return _lazyInitializer.Value;
+            }
+        }
+
+        public static Double[][] GetEuclideanDistance(double[][] data)
         {
             var count = data.Length;
             var dimentionCount = data[0].Length;
@@ -32,7 +48,7 @@ namespace XCluster.Model
             return result;
         }
 
-        public static double[][] GetSquqreEuclideanDistance(double[][] data)
+        public static Double[][] GetSquqreEuclideanDistance(double[][] data)
         {
             var count = data.Length;
             var dimentionCount = data[0].Length;
@@ -77,7 +93,7 @@ namespace XCluster.Model
             return result;
         }
 
-        public static double[][] GetMimkovskyiDistance(double[][] data, int step)
+        public static Double[][] GetMimkovskyiDistance(double[][] data, int step)
         {
             var count = data.Length;
             var dimentionCount = data[0].Length;
@@ -100,7 +116,7 @@ namespace XCluster.Model
             return result;
         }
 
-        private static double[][] GetNormal(double[][] data)
+        private static Double[][] GetNormal(double[][] data)
         {
             var count = data.Length;
             var dimentionCount = data[0].Length;

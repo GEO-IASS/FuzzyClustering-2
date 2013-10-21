@@ -226,7 +226,7 @@ namespace XCluster.Model
              }
         }
 
-        public double[][] GetCluters(int clusterCount)
+        public double[][] GetClusters(int clusterCount)
         {
             this.Clusters = GenerateCentroids(clusterCount);
 

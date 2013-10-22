@@ -84,6 +84,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModel\SOperation.cs" />
     <Compile Include="View\CluteringResult.xaml.cs">
       <DependentUpon>CluteringResult.xaml</DependentUpon>
     </Compile>
@@ -140,7 +141,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\" />
-    <Folder Include="ViewModel\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="License-LGPL.txt" />

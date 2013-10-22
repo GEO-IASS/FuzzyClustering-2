@@ -43,7 +43,7 @@
             this.zgcGraph.ScrollMinX = 0D;
             this.zgcGraph.ScrollMinY = 0D;
             this.zgcGraph.ScrollMinY2 = 0D;
-            this.zgcGraph.Size = new System.Drawing.Size(511, 336);
+            this.zgcGraph.Size = new System.Drawing.Size(514, 336);
             this.zgcGraph.TabIndex = 0;
             // 
             // ZedGraphUserControl

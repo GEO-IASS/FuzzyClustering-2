@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,11 +14,16 @@ namespace ZedGraphUserControls
 {
     public partial class ZedGraphUserControl: UserControl
     {
+        private readonly Color[] _colors =
+        { 
+            Color.Blue, Color.Red, Color.YellowGreen, Color.SeaGreen, Color.LightBlue,
+            Color.Yellow, Color.Purple, Color.Pink, Color.Orange, Color.Firebrick
+        };
+
         public ZedGraphUserControl()
         {
             InitializeComponent();
             CreateGraph(zgcGraph);
-            SetSize();
         }
 
         public new int Width
@@ -71,13 +77,175 @@ namespace ZedGraphUserControls
             zgc.AxisChange();
         }
 
-        private void SetSize()
+        public void BuildGraph( List<List<double[]>> data)
         {
-            zgcGraph.Location = new System.Drawing.Point(10, 10);
+            var clusterCount = data.Count;
+            // Получим панель для рисования
+            GraphPane pane = zgcGraph.GraphPane;
 
-            // Leave a small margin around the outside of the control
-            zgcGraph.Size = new System.Drawing.Size((int)this.Width - 20,
-                                    (int)this.Height - 20);
+            // Очистим список кривых на тот случай, если до этого сигналы уже были нарисованы
+            pane.CurveList.Clear();
+
+            // Интервал, в котором будут лежать точки
+            double xmax = 10;
+            double ymax = 7;
+
+            // Создадим список точек
+            PointPairList[] list = new PointPairList[clusterCount];
+            for (var i = 0; i < clusterCount; i++)
+                list[i] = new PointPairList();
+            LineItem[] myCurve = new LineItem[clusterCount];
+            // Заполняем список точек
+            for (int i = 0; i < clusterCount; i++)
+            {
+                for (int j = 0; j < data[i].Count; j++)
+                {
+                    xmax = xmax < data[i][j][0] ? data[i][j][0] : xmax;
+                    ymax = ymax < data[i][j][1] ? data[i][j][1] : ymax;
+                    list[i].Add(data[i][j][0], data[i][j][1]);
+                }
+
+                myCurve[i] = pane.AddCurve("Кластер" + (i + 1), list[i], _colors[i], SymbolType.Diamond);
+                myCurve[i].Line.IsVisible = false;
+                myCurve[i].Symbol.Border.IsVisible = false;
+                myCurve[i].Symbol.Fill = new Fill(_colors[i]);
+                myCurve[i].Symbol.Size = 7;
+            }
+
+            // Устанавливаем интересующий нас интервал по оси X
+            pane.XAxis.Scale.Min = 0;
+            pane.XAxis.Scale.Max = xmax + xmax/10;
+            pane.XAxis.Title.Text = "Властивість Х";
+            pane.Title.Text = "Кластеризація";
+
+            // Устанавливаем интересующий нас интервал по оси Y
+            pane.YAxis.Scale.Min = 0;
+            pane.YAxis.Scale.Max = ymax + ymax/10;
+            pane.YAxis.Title.Text = "Властивіст Y";
+            // Вызываем метод AxisChange (), чтобы обновить данные об осях. 
+            // В противном случае на рисунке будет показана только часть графика, 
+            // которая умещается в интервалы по осям, установленные по умолчанию
+            zgcGraph.AxisChange();
+
+            // Обновляем график
+            zgcGraph.Invalidate();
+        }
+
+        public void BuildGraph(double[][] data)
+        {
+            var clusterCount = data[0].Length;
+            // Получим панель для рисования
+            GraphPane pane = zgcGraph.GraphPane;
+
+            // Очистим список кривых на тот случай, если до этого сигналы уже были нарисованы
+            pane.CurveList.Clear();
+
+            // Создадим список точек
+            PointPairList[] list = new PointPairList[clusterCount];
+            for (var i = 0; i < clusterCount; i++)
+                list[i] = new PointPairList();
+            LineItem[] myCurve = new LineItem[clusterCount];
+            // Заполняем список точек
+            for (int i = 0; i < clusterCount; i++)
+            {
+                for (int j = 0; j < data.Length; j++)
+                {
+                    list[i].Add(j+1, data[j][i]);
+                }
+
+                myCurve[i] = pane.AddCurve("Кластер" + (i + 1), list[i], _colors[i], SymbolType.Diamond);
+                myCurve[i].Line.IsVisible = false;
+                myCurve[i].Symbol.Border.IsVisible = false;
+                myCurve[i].Symbol.Fill = new Fill(_colors[i]);
+                myCurve[i].Symbol.Size = 7;
+            }
+
+            // Устанавливаем интересующий нас интервал по оси X
+            pane.XAxis.Scale.Min = -1;
+            pane.XAxis.Scale.Max = data.Length+1;
+            pane.XAxis.Title.Text = "Об'єкт";
+            pane.Title.Text = "Кластеризація";
+
+            // Устанавливаем интересующий нас интервал по оси Y
+            pane.YAxis.Scale.Min = -0.1;
+            pane.YAxis.Scale.Max = 1.1;
+            pane.YAxis.Title.Text = "Властивіст Y";
+
+            // Вызываем метод AxisChange (), чтобы обновить данные об осях. 
+            // В противном случае на рисунке будет показана только часть графика, 
+            // которая умещается в интервалы по осям, установленные по умолчанию
+            zgcGraph.AxisChange();
+
+            // Обновляем график
+            zgcGraph.Invalidate();
+        }
+
+        public void BuildDendrogram(double[][] data)
+        {
+            var clusterCount = data[0].Length;
+            // Получим панель для рисования
+            GraphPane pane = zgcGraph.GraphPane;
+
+            // Очистим список кривых на тот случай, если до этого сигналы уже были нарисованы
+            pane.CurveList.Clear();
+
+            // Создадим список точек
+            PointPairList[] list = new PointPairList[clusterCount];
+            for (var i = 0; i < clusterCount; i++)
+                list[i] = new PointPairList();
+            LineItem[] myCurve = new LineItem[clusterCount];
+            // Заполняем список точек
+            for (int i = 0; i < clusterCount; i++)
+            {
+                for (int j = 0; j < data.Length; j++)
+                {
+                    list[i].Add(j + 1, data[j][i]);
+                }
+
+                myCurve[i] = pane.AddCurve("Кластер" + (i + 1), list[i], _colors[i], SymbolType.Diamond);
+                myCurve[i].Line.IsVisible = false;
+                myCurve[i].Symbol.Border.IsVisible = false;
+                myCurve[i].Symbol.Fill = new Fill(_colors[i]);
+                myCurve[i].Symbol.Size = 7;
+            }
+
+            // Устанавливаем интересующий нас интервал по оси X
+            pane.XAxis.Scale.Min = -1;
+            pane.XAxis.Scale.Max = data.Length + 1;
+            pane.XAxis.Title.Text = "Об'єкт";
+            pane.Title.Text = "Кластеризація";
+
+            // Устанавливаем интересующий нас интервал по оси Y
+            pane.YAxis.Scale.Min = -0.1;
+            pane.YAxis.Scale.Max = 1.1;
+            pane.YAxis.Title.Text = "Властивіст Y";
+
+            // Вызываем метод AxisChange (), чтобы обновить данные об осях. 
+            // В противном случае на рисунке будет показана только часть графика, 
+            // которая умещается в интервалы по осям, установленные по умолчанию
+            zgcGraph.AxisChange();
+
+            // Обновляем график
+            zgcGraph.Invalidate();
+        }
+
+        public void ClearGraph()
+        {
+            var width = Width;
+            var height = Height;
+            zgcGraph.GraphPane = new GraphPane(new RectangleF(0,0,width,height),"Кластеризація","Х","Y");
+            zgcGraph.AxisChange();
+        }
+
+        public string Title
+        {
+            get { return zgcGraph.GraphPane.Title.Text; }
+            set { zgcGraph.GraphPane.Title.Text = value; }
+        }
+
+        public new void Refresh()
+        {
+            zgcGraph.Invalidate();
         }
     }
 }

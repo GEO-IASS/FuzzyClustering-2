@@ -83,7 +83,7 @@ namespace XCluster.Model
             return result;
         }
 
-        public HashSet<HashSet<double[]>> GetClusters(int n)
+        public List<List<double[]>> GetClusters(int n)
         {
             var elemntsCount = Data.Length;
             _clusters = new List<int>[elemntsCount];
@@ -98,10 +98,10 @@ namespace XCluster.Model
                 tempData = Iteration(tempData);
             }
 
-            var result = new HashSet<HashSet<Double[]>>();
+            var result = new List<List<Double[]>>();
             foreach (var cluster in _clusters)
             {
-                var clusterSet = new HashSet<Double[]>();
+                var clusterSet = new List<Double[]>();
                 foreach (var i in cluster)
                 {
                     clusterSet.Add(Data[i]);
@@ -113,7 +113,7 @@ namespace XCluster.Model
             return result;
         }
 
-        public HashSet<HashSet<double[]>> GetClusters()
+        public List<List<double[]>> GetClusters()
         {
             var bestClusterCount = 1;
             var bestClusteringMark = 0.0;

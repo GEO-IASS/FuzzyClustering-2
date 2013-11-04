@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace XCluster.Model
 {
@@ -25,100 +26,109 @@ namespace XCluster.Model
             }
         }
 
-        public static Double[][] GetEuclideanDistance(double[][] data)
+
+
+        public delegate List<double[]> GetDistanceDelegat(List<double[]> data);
+
+        public static List<double[]> GetEuclideanDistance(List<double[]> data)
         {
-            var count = data.Length;
+            var count = data.Count;
             var dimentionCount = data[0].Length;
-            var result = new double[count][];
-            double sum = 0;
-
-            data = GetNormal(data); ;
-            for (var i = 0; i < count; i++)
-            {
-                result[i] = new double[count];
-                for (var j = 0; j < count; j++)
-                {
-                    for (var k = 0; k < dimentionCount; k++)
-                        sum += (data[i][k] - data[j][k]) * (data[i][k] - data[j][k]);
-
-                    result[i][j] = Math.Sqrt(sum);
-                    sum = 0;
-                }
-            }
-            return result;
-        }
-
-        public static Double[][] GetSquqreEuclideanDistance(double[][] data)
-        {
-            var count = data.Length;
-            var dimentionCount = data[0].Length;
-            var result = new double[count][];
-            double sum = 0;
-            data = GetNormal(data);
-            for (var i = 0; i < count; i++)
-            {
-                result[i] = new double[count];
-                for (var j = 0; j < count; j++)
-                {
-                    for (var k = 0; k < dimentionCount; k++)
-                        sum += (data[i][k] - data[j][k]) * (data[i][k] - data[j][k]);
-
-                    result[i][j] = Math.Sqrt(sum);
-                    sum = 0;
-                }
-            }
-            return result;
-        }
-
-        public static Double[][] GetLinearDistance(Double[][] data)
-        {
-            var count = data.Length;
-            var dimentionCount = data[0].Length;
-            var result = new double[count][];
+            var result = new List<double[]>();
             double sum = 0;
 
             data = GetNormal(data);
             for (var i = 0; i < count; i++)
             {
-                result[i] = new double[count];
+                var tmp = new double[count];
+                for (var j = 0; j < count; j++)
+                {
+                    for (var k = 0; k < dimentionCount; k++)
+                        sum += (data[i][k] - data[j][k]) * (data[i][k] - data[j][k]);
+
+                    tmp[j] = Math.Sqrt(sum);
+                    sum = 0;
+                }
+                result.Add(tmp);
+            }
+            return result;
+        }
+
+        public static List<double[]> GetSquqreEuclideanDistance(List<double[]> data)
+        {
+            var count = data.Count;
+            var dimentionCount = data[0].Length;
+            var result = new List<double[]>();
+            double sum = 0;
+            data = GetNormal(data);
+            for (var i = 0; i < count; i++)
+            {
+                var tmp = new double[count];
+                for (var j = 0; j < count; j++)
+                {
+                    for (var k = 0; k < dimentionCount; k++)
+                        sum += (data[i][k] - data[j][k]) * (data[i][k] - data[j][k]);
+
+                    tmp[j] = Math.Sqrt(sum);
+                    sum = 0;
+                }
+                result.Add(tmp);
+            }
+            return result;
+        }
+
+        public static List<double[]> GetLinearDistance(List<double[]> data)
+        {
+            var count = data.Count;
+            var dimentionCount = data[0].Length;
+            var result = new List<double[]>();
+            double sum = 0;
+
+            data = GetNormal(data);
+            for (var i = 0; i < count; i++)
+            {
+                var tmp = new double[count];
                 for (var j = 0; j < count; j++)
                 {
                     for (var k = 0; k < dimentionCount; k++)
                         sum += Math.Abs(data[i][k] - data[j][k]);
 
-                    result[i][j] = sum;
+                    tmp[j] = sum;
                     sum = 0;
                 }
+                result.Add(tmp);
             }
             return result;
         }
 
-        public static Double[][] GetMimkovskyiDistance(double[][] data, int step)
+        public static List<double[]> GetMimkovskyiDistance(List<double[]> data)
         {
-            var count = data.Length;
+            var step = 3;
+            var count = data.Count;
             var dimentionCount = data[0].Length;
-            var result = new double[count][];
+            var result = new List<double[]>();
             double sum = 0;
 
             data = GetNormal(data);
             for (var i = 0; i < count; i++)
             {
-                result[i] = new double[count];
+                var tmp = new double[count];
                 for (var j = 0; j < count; j++)
                 {
                     for (var k = 0; k < dimentionCount; k++)
                         sum += Math.Pow(Math.Abs(data[i][k] - data[j][k]), step);
 
-                    result[i][j] = Math.Pow(sum, (1.0 / step));
+                    tmp[j] = Math.Pow(sum, (1.0 / step));
                     sum = 0;
                 }
+                result.Add(tmp);
             }
             return result;
         }
 
-        private static Double[][] GetNormal(double[][] data)
+        private static List<double[]> GetNormal(List<double[]> data)
         {
-            var count = data.Length;
+            var count = data.Count;
             var dimentionCount = data[0].Length;
             var result = new double[count][];
 
@@ -137,12 +147,13 @@ namespace XCluster.Model
                     if (data[j][i] < min)
                         min = data[j][i];
                 }
+                
                 for (var j = 0; j < count; j++)
                 {
                     result[j][i] = (max - data[j][i]) / (max - min);
                 }
             }
-            return result;
+            return result.ToList();
         }
     }
 }

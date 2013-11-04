@@ -8,21 +8,30 @@ namespace XCluster.Model
 {
     class WPGMA
     {
+
         private List<int>[] _clusters;
-        public double[][] Data { get; private set; }
+        private List<List<List<double[]>>> clusterTree;
+        public List<double[]> Data { get; private set; }
         public double ClusteringMark { get; private set; }
         public int ClusterCount { get; private set; }
-        private double[][] distanceMatrix;
+        private List<double[]> distanceMatrix;
+        private List<double[]> dendrogram;
+        private double[] alpha;
 
-        public WPGMA(double[][] data)
+        private Distance.GetDistanceDelegat getDistance;
+
+        public WPGMA(List<double[]> data, Distance.GetDistanceDelegat distanceHandler)
         {
+            clusterTree = new List<List<List<double[]>>>();
+            alpha = new double[data.Count];
             this.Data = data;
+            getDistance += distanceHandler ?? Distance.GetEuclideanDistance;
         }
 
-        private double[][] Iteration(double[][] data)
+        private List<double[]> Iteration(List<double[]> data)
         {
             var min = data[0][1];
-            var elemntCount = data.Length;
+            var elemntCount = data.Count;
             int x = 0, y = 1;
             int m = 0, n = 0;
 
@@ -79,19 +88,21 @@ namespace XCluster.Model
                 n = 0;
             }
 
+            alpha[elemntCount-1] = min; 
             UnionClaster(x, y);
-            return result;
+
+            return result.ToList();
         }
 
         public List<List<double[]>> GetClusters(int n)
         {
-            var elemntsCount = Data.Length;
+            var elemntsCount = Data.Count;
             _clusters = new List<int>[elemntsCount];
             for (var i = 0; i < elemntsCount; i++)
             {
                 _clusters[i] = new List<int> { i };
             }
-            distanceMatrix = Distance.GetSquqreEuclideanDistance(Data);
+            distanceMatrix = getDistance(Data);
             var tempData = distanceMatrix;
             while (_clusters.Length > n)
             {
@@ -117,7 +128,7 @@ namespace XCluster.Model
         {
             var bestClusterCount = 1;
             var bestClusteringMark = 0.0;
-            for (var i = 1; i < Data.Length + 1; i++)
+            for (var i = 1; i < Data.Count + 1; i++)
             {
                 GetClusters(i);
                 if (!(bestClusteringMark < ClusteringMark)) continue;
@@ -166,7 +177,7 @@ namespace XCluster.Model
                     for (var j = 0; j < elementCount; j++)
                         A += distanceMatrix[cluster[i]][cluster[j]];
                    
-                    for (var k = 0; k < distanceMatrix.Length; k++)
+                    for (var k = 0; k < distanceMatrix.Count; k++)
                         if (cluster.Contains(k) == false)
                             if (B > distanceMatrix[cluster[i]][k])
                                 B = distanceMatrix[cluster[i]][k];
@@ -176,6 +187,30 @@ namespace XCluster.Model
                 GS += S / elementCount;
             }
             return GS / clustersCount;
+        }
+
+        public List<double[]> GetDendrogram()
+        {
+            var result = new List<double[]>();
+            var pPoint = 1;
+            for (var i = 1; i <= Data.Count; i++)
+            {
+                clusterTree.Add(GetClusters(i));
+            }
+            result.Add(new []{1.0,clusterTree[1][0].Count});
+            for (var i = 2; i < Data.Count; i++)
+            {
+                result.Add(new[] { alpha[i], result[result.Count - 1][0] });
+                for (var j = 0; j < Data[i].Count(); j++)
+                {
+                    if (!Data[i - 1].Contains(Data[i][j]))
+                    {
+                        
+                    }
+                }
+            }
+            return result;
+
         }
     }
 }

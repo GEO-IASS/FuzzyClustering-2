@@ -10,18 +10,23 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
-       <Label Content="Кластеризація" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+       <Label Content="Кластеризація" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="24"/>
 
     	<Grid Grid.Row="1" HorizontalAlignment="Left" Width="291.11">
-    		<Label Content="Кількість кластерів" Margin="10,104,85.11,0" Height="34" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-    		<ComboBox Margin="10,49,10,0" Height="32" VerticalAlignment="Top"/>
-    		<Button Content="Завантажити дані" Margin="10,0,10,180" Height="31" VerticalAlignment="Bottom" Click="Button_Click"/>
-    		<Button Content="Кластеризувати" Margin="10,0,10,10" Height="50" VerticalAlignment="Bottom" Click="Button_Click_2"/>
-    		<Button Content="Редагувати дані" Margin="10,0,10,125" Height="31" VerticalAlignment="Bottom" Click="Button_Click_1"/>
+    		<Label Content="Кількість кластерів" Margin="10,104,85.11,0" Height="34" VerticalAlignment="Top" VerticalContentAlignment="Center" FontSize="14.667"/>
+    		<ComboBox x:Name="cbDistance" Margin="10,49,10,0" Height="32" VerticalAlignment="Top" FontSize="13.333" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" >
+    			<ComboBoxItem Content="Лінійна відстань" Width="269.11" HorizontalAlignment="Left" FontSize="13.333" IsSelected="True"/>
+    			<ComboBoxItem Content="Евклідова відстань" HorizontalAlignment="Left" Width="269.11" FontSize="13.333"/>
+    			<ComboBoxItem Content="Квадратична Евклідова відстань" HorizontalAlignment="Left" Width="269.11" FontSize="13.333"/>
+    			<ComboBoxItem Content="Відстань Мінковського" HorizontalAlignment="Left" Width="269.11" FontSize="13.333"/>
+    		</ComboBox>
+    		<Button Content="Завантажити дані" Margin="10,0,10,180" Height="31" VerticalAlignment="Bottom" Click="Button_Click" HorizontalContentAlignment="Center" FontSize="14.667"/>
+    		<Button Content="Кластеризувати" Margin="10,0,10,10" Height="50" VerticalAlignment="Bottom" Click="Button_Click_2" FontSize="14.667"/>
+    		<Button Content="Редагувати дані" Margin="10,0,10,125" Height="31" VerticalAlignment="Bottom" Click="Button_Click_1" FontSize="14.667"/>
 
-    		<xctk:IntegerUpDown Margin="227.11,104,10,0" VerticalAlignment="Top" Height="34" DefaultValue="2" Minimum="1" />
-    		<Label Content="Метрика" Margin="10,10,10,0" HorizontalContentAlignment="Center" Height="34" VerticalAlignment="Top"/>
-    		<Button Content="Зберегти дані" Margin="10,0,10,77" Height="31" VerticalAlignment="Bottom" Click="Button_Click"/>
+    		<xctk:IntegerUpDown x:Name="ClusterCount" Margin="211,104,26.11,0" VerticalAlignment="Top" Height="34"  Value="2" DefaultValue="2" Minimum="1" FontSize="14.667" />
+    		<Label Content="Метрика" Margin="10,10,10,0" Height="34" VerticalAlignment="Top" FontSize="18.667" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold"/>
+    		<Button Content="Зберегти дані" Margin="10,0,10,77" Height="31" VerticalAlignment="Bottom" Click="SaveData" FontSize="14.667"/>
 
     	</Grid>
     	<Grid x:Name="grdMain" Grid.Row="1" Margin="291.11,0,0,0">

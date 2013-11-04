@@ -32,5 +32,23 @@ namespace XCluster
             windowCluteringResult = new CluteringResult();
             windowCluteringResult.Show();
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            windowCluteringResult = new CluteringResult(2);
+            windowCluteringResult.Show();
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            windowCluteringResult = new CluteringResult(3);
+            windowCluteringResult.Show();
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            var imageWindow = new ClusterImage();
+            imageWindow.Show();
+        }
     }
 }

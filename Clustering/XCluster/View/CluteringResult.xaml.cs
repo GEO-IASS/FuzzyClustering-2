@@ -24,16 +24,22 @@ namespace XCluster.View
     /// </summary>
     public partial class CluteringResult : Window
     {
+        private int defaultClusterCount = 2;
+        private int method;
+        private List<double[]> data = Data;
         public ZedGraphUserControl zdg { get; set; }
-        public CluteringResult()
+        public CluteringResult(int method = 1)
         {
+            this.method = method;
             InitializeComponent();
         }
 
         private void Window_Loaded_1(object sender, RoutedEventArgs e)
         {
             zdg = new ZedGraphUserControl();
-
+            
+            zdg.AddClickEvent(zdg_Click);
+            zdg.MouseClick += zdg_Click;
             //Resize ZedGraph COntrol.
             grdHost.SizeChanged += (o, args) =>
             {
@@ -44,10 +50,18 @@ namespace XCluster.View
             grdHost.Child = zdg;
         }
 
+     
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var data = SOperation.ReadFile();
-            System.Windows.MessageBox.Show(data.Count != 0 ? data[0] : "No Points!");
+            this.data = SOperation.ReadFile() ?? Data;
+            zdg.BuildPoint(data);
+            //System.Windows.MessageBox.Show(data != null ? data[0][0].ToString() : "No Points!");
+        }
+
+        private void SaveData(object sender, RoutedEventArgs e)
+        {
+            SOperation.WriteFile(data);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -59,13 +73,27 @@ namespace XCluster.View
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            var alg = new CMeans(Data);
-            var result = alg.GetClusters(2);
-            zdg.BuildGraph(result);
+            Cluster();
+        }
+
+        private void zdg_Click(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            double x, y;
+            var rank = data[0].Length;
+            var point = new double[rank];
+            zdg.GraphPane.ReverseTransform(e.Location, out x, out y);
+
+            for (var i = 0; i < rank; i++)
+                if (i % 2 == 0)
+                    point[i] = x;
+                else
+                    point[i] = y;
+            data.Add(point);
+            Cluster();
 
         }
 
-        public static double[][] Data =
+        public static List<double[]> Data = new List<double[]>
         {
             new double[] {58, 55, 52},
             new double[] {56, 55, 52},
@@ -81,7 +109,46 @@ namespace XCluster.View
             new double[] {133, 124, 123},
             new double[] {153, 113, 153}
         };
-       
+
+        private void Cluster()
+        {
+            Distance.GetDistanceDelegat distanceHandler;
+            switch (cbDistance.SelectedIndex)
+            {
+                case 0:
+                    distanceHandler = Distance.GetLinearDistance;
+                    break;
+                case 1:
+                    distanceHandler = Distance.GetEuclideanDistance;
+                    break;
+                case 2:
+                    distanceHandler = Distance.GetSquqreEuclideanDistance;
+                    break;
+                case 3:
+                    distanceHandler = Distance.GetMimkovskyiDistance;
+                    break;
+                default:
+                    distanceHandler = Distance.GetEuclideanDistance;
+                    break;
+            }
+
+            var clusterCount = ClusterCount.Value;
+            switch (method)
+            {
+                case 1:
+                    var wpgma = new WPGMA(data, distanceHandler);
+                    zdg.BuildGraph(wpgma.GetClusters(clusterCount ?? defaultClusterCount));
+                    break;
+                case 2:
+                    var cmean = new CMeans(data);
+                    zdg.BuildGraph(cmean.GetClusters(clusterCount ?? defaultClusterCount));
+                    break;
+                case 3:
+                    var kmean = new KMeans(data);
+                    zdg.BuildGraph(kmean.GetClusters(clusterCount ?? defaultClusterCount));
+                    break;
+            }    
+        }
            
         
     }

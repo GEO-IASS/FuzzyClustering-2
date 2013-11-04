@@ -38,6 +38,12 @@ namespace ZedGraphUserControls
             set { zgcGraph.Height = value; }
         }
 
+        public GraphPane GraphPane
+        {
+            get { return zgcGraph.GraphPane; }
+            set { zgcGraph.GraphPane = value; }
+        }
+
         private void CreateGraph(ZedGraphControl zgc)
         {
             // get a reference to the GraphPane
@@ -195,25 +201,33 @@ namespace ZedGraphUserControls
                 list[i] = new PointPairList();
             LineItem[] myCurve = new LineItem[clusterCount];
             // Заполняем список точек
-            for (int i = 0; i < clusterCount; i++)
-            {
-                for (int j = 0; j < data.Length; j++)
-                {
-                    list[i].Add(j + 1, data[j][i]);
-                }
 
-                myCurve[i] = pane.AddCurve("Кластер" + (i + 1), list[i], _colors[i], SymbolType.Diamond);
-                myCurve[i].Line.IsVisible = false;
-                myCurve[i].Symbol.Border.IsVisible = false;
-                myCurve[i].Symbol.Fill = new Fill(_colors[i]);
-                myCurve[i].Symbol.Size = 7;
-            }
+            var ax  =new []{3.0, 3.0};
+            var ay = new[] { 1.0, 0.90 };
+            var bx = new[] { 1.0, 4.0 };
+            var by = new[] { 0.9, 0.90 };
+            var cx = new[] { 1.0, 1.0 };
+            var cy = new[] { 0.9, 0 };
+            var dx = new[] { 4.0, 4.0 };
+            var dy = new[] { 0.9, 0 };
+
+
+            pane.AddCurve("", ax, ay, Color.Blue, SymbolType.None);
+            pane.AddCurve("", bx, by, Color.Blue, SymbolType.None);
+            pane.AddCurve("", cx, cy, Color.Blue, SymbolType.None);
+            pane.AddCurve("", dx, dy, Color.Blue, SymbolType.None);
+
 
             // Устанавливаем интересующий нас интервал по оси X
             pane.XAxis.Scale.Min = -1;
             pane.XAxis.Scale.Max = data.Length + 1;
+            //pane.XAxis.Type = AxisType.Text;
             pane.XAxis.Title.Text = "Об'єкт";
             pane.Title.Text = "Кластеризація";
+            //pane.X2Axis.Type = AxisType.Text;
+            //pane.X2Axis.Scale.TextLabels = new[] { "obj1", "obj2", "obj3", "obj4"};
+            //pane.X2Axis.IsVisible = true;
+            //pane.X2Axis.
 
             // Устанавливаем интересующий нас интервал по оси Y
             pane.YAxis.Scale.Min = -0.1;
@@ -245,6 +259,47 @@ namespace ZedGraphUserControls
 
         public new void Refresh()
         {
+            zgcGraph.Invalidate();
+        }
+
+        public void AddClickEvent(MouseEventHandler handler)
+        {
+            zgcGraph.MouseClick += handler;
+        }
+
+        public void BuildPoint(List<double[]> data)
+        {
+            double xmax = 10;
+            double ymax = 7;
+            var pane = zgcGraph.GraphPane;
+            pane.CurveList.Clear();
+
+            var list = new PointPairList();
+
+            foreach (var point in data)
+            {
+                xmax = xmax < point[0] ? point[0] : xmax;
+                ymax = ymax < point[1] ? point[1] : ymax;
+                list.Add(point[0],point[1]);
+            }
+
+            var myCurve = pane.AddCurve("Множина", list, Color.Blue, SymbolType.Diamond);
+            myCurve.Line.IsVisible = false;
+            myCurve.Symbol.Fill.Color = Color.Blue;
+            myCurve.Symbol.Fill.Type = FillType.Solid;
+            myCurve.Symbol.Size = 7;
+
+            pane.XAxis.Scale.Min = 0;
+            pane.XAxis.Scale.Max = xmax + xmax / 10;
+            pane.XAxis.Title.Text = "Властивість Х";
+            pane.Title.Text = "Кластеризація";
+
+            pane.YAxis.Scale.Min = 0;
+            pane.YAxis.Scale.Max = ymax + ymax / 10;
+            pane.YAxis.Title.Text = "Властивіст Y";
+          
+            zgcGraph.AxisChange();
+
             zgcGraph.Invalidate();
         }
     }

@@ -11,10 +11,12 @@ namespace XCluster.Model
 {
     class CMeans
     {
+
+
         /// <summary>
         /// Array containing all points used by the algorithm
         /// </summary>
-        private List<ClusterPoint> Points;
+        public List<ClusterPoint> Points;
 
         public int MaxIterations { get; set; }
 
@@ -23,7 +25,7 @@ namespace XCluster.Model
         /// <summary>
         /// Array containing all clusters handled by the algorithm
         /// </summary>
-        private List<ClusterCentroid> Clusters;
+        public List<ClusterCentroid> Clusters;
 
         /// <summary>
         /// Array containing all clusters membership value of all points to each cluster
@@ -31,7 +33,7 @@ namespace XCluster.Model
         /// </summary>
         public double[][] U;
 
-        public double[][] Data;
+        public List<double[]> Data;
 
         private bool isConverged = false;
 
@@ -60,7 +62,7 @@ namespace XCluster.Model
         /// <param name="fuzzy">The fuzzyness factor to be used, constant</param>
         /// <param name="myImage">A working image, so that the GUI working image can be updated</param>
         /// <param name="numCluster">The number of clusters requested by the user from the GUI</param>
-        public CMeans(double[][] data)
+        public CMeans(List<double[]> data)
         {
             this.MaxIterations = 10;
             this.Accuracy = 0.04;
@@ -270,7 +272,7 @@ namespace XCluster.Model
             return this.U;
         }
 
-        private List<ClusterPoint> ConvertToClusterPoints(double[][] data)
+        private List<ClusterPoint> ConvertToClusterPoints(List<double[]> data)
         {
             return data.Select(d => new ClusterPoint(d)).ToList();
         }
@@ -285,7 +287,7 @@ namespace XCluster.Model
                 var point = new double[data.Data.Length];
                 for (var j = 0; j < data.Data.Length; j++)
                 {
-                    point[i] = rnd.NextDouble();
+                    point[j] = rnd.NextDouble();
                 }
                 result.Add(new ClusterCentroid(point));
             }

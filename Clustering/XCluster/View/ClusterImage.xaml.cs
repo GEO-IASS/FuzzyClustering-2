@@ -19,7 +19,6 @@ namespace XCluster.View
     /// </summary>
     public partial class ClusterImage : Window
     {
-
         public Bitmap sourceImage;
         public Bitmap filteredImage;
         public Bitmap originalImage;
@@ -209,6 +208,20 @@ namespace XCluster.View
             {
                 backgroundWorker.CancelAsync();
             }
+        }
+
+        private void Show_Help(object sender, RoutedEventArgs e)
+        {
+            this.IsEnabled = false;
+            var helpWindow = new HelpWindow(this);
+            helpWindow.Show();
+        }
+
+        private void Show_About(object sender, RoutedEventArgs e)
+        {
+            this.IsEnabled = false;
+            var helpWindow = new AboutWindow(this);
+            helpWindow.Show();
         }
     }
 }

@@ -17,27 +17,6 @@ namespace XCluster
     /// </summary>
     public partial class App : Application
     {
-        //public static double[][] Data =
-        //{
-        //    new double[] {58, 55, 52},
-        //    new double[] {56, 55, 52},
-        //    new double[] {52, 50, 54},
-        //    new double[] {1, 2, 3},
-        //    new double[] {3, 2, 3},
-        //    new double[] {2, 5, 3},
-        //    new double[] {4, 3, 3},
-        //    new double[] {6, 1, 3},
-        //    new double[] {6, 1, 3},
-        //    new double[] {3, 2, 1},
-        //    new double[] {143, 123, 153},
-        //    new double[] {133, 124, 123},
-        //    new double[] {153, 113, 153}
-        //};
-        //public App()
-        //{
-        //    var alg = new KMeans(Data);
-        //    var result = alg.GetClusters(2);
-        //    MessageBox.Show(result.ToString());
-        //}
+
     }
 }

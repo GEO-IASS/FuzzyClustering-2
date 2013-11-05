@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using XCluster.Model;
 using XCluster.ViewModel;
 
 namespace XCluster.View
@@ -23,16 +24,24 @@ namespace XCluster.View
     public partial class DataEdit : Window
     {
         public List<double[]> Data;
-        private MainWindow parentWindow;
+        private Window parentWindow;
         private DataTable dataBinding;
 
-        public DataEdit(MainWindow parent)
+        public DataEdit(Window parent)
         {
             InitializeComponent();
             Data = new List<double[]>();
             this.parentWindow = parent;
             myDG.DataSource = dataBinding;
            
+        }
+
+        public DataEdit(Window parent, List<double[]> data)
+        {
+            InitializeComponent();
+            Data = data ?? new List<double[]>();
+            this.parentWindow = parent;
+            myDG.DataSource = SetTable(Data);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -44,11 +53,6 @@ namespace XCluster.View
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             SOperation.WriteFile(GetTable());
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-           
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -81,7 +85,6 @@ namespace XCluster.View
             return result;
         }
 
-
         private List<double[]> GetTable()
         {
             var result = new List<double[]>();
@@ -107,9 +110,26 @@ namespace XCluster.View
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
+            if (parentWindow is MainWindow)
+            {
+                var pWindows = parentWindow as MainWindow;
+                pWindows.Data = GetTable();
+                parentWindow.Show();
+                this.Closed -= Window_Closed;
+                this.Close();
+            }
+            if (parentWindow is CluteringResult)
+            {
+                var pWindows = parentWindow as CluteringResult;
+                pWindows.data = GetTable();
+                parentWindow.Show();
+                this.Closed -= Window_Closed;
+                this.Close();
+            }
             parentWindow.Show();
             this.Closed -= Window_Closed;
             this.Close();
+            
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
@@ -127,6 +147,7 @@ namespace XCluster.View
         {
             this.Close();
         }
+
         private void Menu_Save(object sender, RoutedEventArgs e)
         {
             SOperation.WriteFile(Data);
@@ -135,6 +156,20 @@ namespace XCluster.View
         private void Menu_Open(object sender, RoutedEventArgs e)
         {
             SOperation.ReadFile();
+        }
+
+        private void Show_Help(object sender, RoutedEventArgs e)
+        {
+            this.IsEnabled = false;
+            var helpWindow = new HelpWindow(this);
+            helpWindow.Show();
+        }
+
+        private void Show_About(object sender, RoutedEventArgs e)
+        {
+            this.IsEnabled = false;
+            var helpWindow = new AboutWindow(this);
+            helpWindow.Show();
         }
 
     }

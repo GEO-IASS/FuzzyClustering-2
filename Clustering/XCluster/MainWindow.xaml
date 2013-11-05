@@ -4,45 +4,45 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="XCluster.MainWindow"
         Title="Clustering" Height="571" Width="810" MinHeight="550" MinWidth="800"
 		Icon="Resource/Icon/icon.ico">
-	<Grid Height="Auto" VerticalAlignment="Stretch" Width="Auto" HorizontalAlignment="Stretch" Margin="0">
-		<Grid.Background>
-			<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-				<GradientStop Color="#FFA4A69D" Offset="0"/>
-				<GradientStop Color="#FF71747A" Offset="1"/>
-			</LinearGradientBrush>
-		</Grid.Background>
-		<Menu Height="28" VerticalAlignment="Top" Width="Auto" Margin="0" HorizontalAlignment="Stretch">
-			<Menu.Background>
-				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-					<GradientStop Color="#FFC1BEB8"/>
-					<GradientStop Color="#FF596580" Offset="1"/>
-				</LinearGradientBrush>
-			</Menu.Background>
-			<MenuItem Header="Файл" FontSize="13.333">
+    <Grid Height="Auto" VerticalAlignment="Stretch" Width="Auto" HorizontalAlignment="Stretch" Margin="0">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFA4A69D" Offset="0"/>
+                <GradientStop Color="#FF71747A" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Menu Height="28" VerticalAlignment="Top" Width="Auto" Margin="0" HorizontalAlignment="Stretch">
+            <Menu.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFC1BEB8"/>
+                    <GradientStop Color="#FF596580" Offset="1"/>
+                </LinearGradientBrush>
+            </Menu.Background>
+            <MenuItem Header="Файл" FontSize="13.333">
                 <MenuItem Header="Відкрити" Click="Menu_Open" HorizontalAlignment="Left" Width="144.506666666667"/>
                 <MenuItem Header="Зберегти" Click="Menu_Save" HorizontalAlignment="Left" Width="144.506666666667"/>
-				<Separator HorizontalAlignment="Left" Width="144.506666666667"/>
-				<MenuItem Header="Вихід" Click="Menu_Exit" HorizontalAlignment="Left" Width="144.506666666667"/>
-			</MenuItem>
-			<MenuItem Header="Допомога" FontSize="13.333"/>
-			<MenuItem Header="Про програму" FontSize="13.333"/>
-		</Menu>
-		<Grid Margin="0,46.5,0,10">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="40*"/>
-				<RowDefinition Height="40*"/>
-				<RowDefinition Height="40*"/>
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="40*"/>
-				<ColumnDefinition Width="40*"/>
-				<ColumnDefinition Width="40*"/>
-			</Grid.ColumnDefinitions>
+                <Separator HorizontalAlignment="Left" Width="144.506666666667"/>
+                <MenuItem Header="Вихід" Click="Menu_Exit" HorizontalAlignment="Left" Width="144.506666666667"/>
+            </MenuItem>
+            <MenuItem Header="Допомога" Click="Show_Help" FontSize="13.333"/>
+            <MenuItem Header="Про програму"  Click="Show_About" FontSize="13.333"/>
+        </Menu>
+        <Grid Margin="0,46.5,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40*"/>
+                <RowDefinition Height="40*"/>
+                <RowDefinition Height="40*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition Width="40*"/>
+            </Grid.ColumnDefinitions>
             <Button Style="{StaticResource MainButton}" Content="C-Means" RenderTransformOrigin="0,0" Grid.Column="1" FontSize="48" Margin="5,10" Click="Button_Click_1"/>
             <Button Style="{StaticResource MainButton}" Content="K-Means" RenderTransformOrigin="0,0" Grid.Column="2" FontSize="48" Margin="5,10,10,10" Click="Button_Click_2"/>
             <Button Style="{StaticResource MainButton}" Content="WPGMA" RenderTransformOrigin="0,0" Click="Button_Click" FontSize="48" Margin="10,10,5,10" />
             <Button Style="{StaticResource MainButton}" Content="Редагувати віхдін данні" RenderTransformOrigin="0,0" Grid.Row="2" Margin="10" Click="Button_Click_4" Grid.ColumnSpan="3" FontSize="48"/>
             <Button Style="{StaticResource MainButton}" Content="Кластеризувати зображення" RenderTransformOrigin="0,0" Grid.Row="1" Grid.ColumnSpan="3" Margin="10" Click="Button_Click_3" FontSize="48"/>
-		</Grid>
-	</Grid>
+        </Grid>
+    </Grid>
 </Window>

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -77,6 +78,20 @@ namespace XCluster
         private void Menu_Open(object sender, RoutedEventArgs e)
         {
             SOperation.ReadFile();
+        }
+
+        private void Show_Help(object sender, RoutedEventArgs e)
+        {
+            this.IsEnabled = false;
+            var helpWindow = new HelpWindow(this);
+            helpWindow.Show();
+        }
+
+        private void Show_About(object sender, RoutedEventArgs e)
+        {
+            this.IsEnabled = false;
+            var helpWindow = new AboutWindow(this);
+            helpWindow.Show();
         }
     }
 }

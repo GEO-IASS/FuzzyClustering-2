@@ -26,8 +26,9 @@ namespace XCluster.View
     {
         private int defaultClusterCount = 2;
         private int method;
-        private List<double[]> data = Data;
+        public List<double[]> data = Data;
         private MainWindow parentWindow;
+        private ClusterResult clusteringResult;
 
         public ZedGraphUserControl zdg { get; set; }
         public CluteringResult(MainWindow parent, int method = 1)
@@ -62,14 +63,19 @@ namespace XCluster.View
 
         private void SaveData(object sender, RoutedEventArgs e)
         {
-            SOperation.WriteFile(data);
+           SOperation.WriteFile(data);
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void SaveClusterResult(object sender, RoutedEventArgs e)
         {
-            zdg.ClearGraph();
-            zdg.Title = "My MRGA TITLE";
-            zdg.Refresh();
+            SOperation.SaveResult(clusteringResult);
+        }
+
+        private void Edit_Data(object sender, RoutedEventArgs e)
+        {
+            var editWimdow = new DataEdit(this,data);
+            editWimdow.Show();
+            this.Hide();
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -138,17 +144,36 @@ namespace XCluster.View
             {
                 case 1:
                     var wpgma = new WPGMA(data, distanceHandler);
-                    zdg.BuildGraph(wpgma.GetClusters(clusterCount ?? defaultClusterCount));
+                    clusteringResult = new ClusterResult(data, wpgma.GetClusters(clusterCount ?? defaultClusterCount));
+                    //zdg.BuildGraph(wpgma.GetClusters(clusterCount ?? defaultClusterCount));
                     break;
                 case 2:
                     var cmean = new CMeans(data);
-                    zdg.BuildGraph(cmean.GetClusters(clusterCount ?? defaultClusterCount));
+                     clusteringResult = new ClusterResult(data, cmean.GetClusters(clusterCount ?? defaultClusterCount));
                     break;
                 case 3:
                     var kmean = new KMeans(data);
-                    zdg.BuildGraph(kmean.GetClusters(clusterCount ?? defaultClusterCount));
+                    clusteringResult = new ClusterResult(data, kmean.GetClusters(clusterCount ?? defaultClusterCount));
                     break;
-            }    
+            }
+
+
+            var displayMode = DisplayMode.SelectedIndex;
+            switch (displayMode)
+            {
+                case 0:
+                    if (clusteringResult.Clusters != null)
+                    zdg.BuildGraph(clusteringResult.Clusters);
+                    break;
+                case 1:
+                    if (clusteringResult.FuzzyClusters != null)
+                    zdg.BuildGraph(clusteringResult.FuzzyClusters);
+                    break;
+                case 2:
+                    if (clusteringResult.FuzzyClusters != null)
+                        zdg.BuildDendrogram(clusteringResult.FuzzyClusters);
+                    break;
+            } 
         }
 
         private void Back(object sender, RoutedEventArgs e)
@@ -175,6 +200,20 @@ namespace XCluster.View
         private void Menu_Open(object sender, RoutedEventArgs e)
         {
             SOperation.ReadFile();
+        }
+
+        private void Show_Help(object sender, RoutedEventArgs e)
+        {
+            this.IsEnabled = false;
+            var helpWindow = new HelpWindow(this);
+            helpWindow.Show();
+        }
+
+        private void Show_About(object sender, RoutedEventArgs e)
+        {
+            this.IsEnabled = false;
+            var helpWindow = new AboutWindow(this);
+            helpWindow.Show();
         }
            
         

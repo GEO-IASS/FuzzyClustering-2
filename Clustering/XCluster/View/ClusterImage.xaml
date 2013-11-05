@@ -45,8 +45,8 @@
         		<Separator HorizontalAlignment="Left" Width="144.506666666667"/>
         		<MenuItem Header="Вихід" Click="Menu_Exit" HorizontalAlignment="Left" Width="144.506666666667"/>
         	</MenuItem>
-        	<MenuItem Header="Допомога" FontSize="13.333"/>
-        	<MenuItem Header="Про програму" FontSize="13.333"/>
+            <MenuItem Header="Допомога" Click="Show_Help" FontSize="13.333"/>
+            <MenuItem Header="Про програму"  Click="Show_About" FontSize="13.333"/>
         </Menu>
 		<Button Style="{StaticResource BackButton}" Content="Назад" Grid.Column="1" Height="27" VerticalAlignment="Top" Click="Button_Click_2" HorizontalAlignment="Right" Width="80" FontSize="14.667" FontWeight="Bold"/>
     </Grid>

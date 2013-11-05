@@ -1,0 +1,44 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid" x:Class="XCluster.View.DataEdit"
+		xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        Title="Clustering" Height="550" Width="800" 
+		MinHeight="550" MinWidth="800" Closed="Window_Closed"
+    Icon="../Resource/Icon/icon.ico">
+	<Grid>		
+		<Grid Margin="0,28,0,0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="4*"/>
+				<ColumnDefinition Width="4*"/>
+			</Grid.ColumnDefinitions>
+		
+			<Button Content="Завантажити" Height="39" Margin="0,429,40,0" VerticalAlignment="Top" RenderTransformOrigin="0.174,0.057" HorizontalAlignment="Right" Width="94" Click="Button_Click"/>
+			<WindowsFormsHost Margin="10,86.5,47,179.5" Grid.ColumnSpan="2">
+   <wf:DataGridView x:Name="myDG"/>
+</WindowsFormsHost>
+			<Button Content="Зберегти" HorizontalAlignment="Left" Height="39" Margin="40,429,0,0" VerticalAlignment="Top" Width="94" RenderTransformOrigin="0.174,0.057" Grid.Column="1" Click="Button_Click_1"/>
+		
+		</Grid>
+		<Button Content="Додати вимір" HorizontalAlignment="Left" Height="27" Margin="10,48,0,0" VerticalAlignment="Top" Width="168" RenderTransformOrigin="0.174,0.057" Click="Button_Click_4"/>
+		<Button Content="Видалити вимір" HorizontalAlignment="Left" Height="27" Margin="183,48,0,0" VerticalAlignment="Top" Width="168" RenderTransformOrigin="0.174,0.057" Click="Button_Click_5"/>
+		<Menu Height="28" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Stretch">
+			<Menu.Background>
+				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+					<GradientStop Color="#FFC1BEB8"/>
+					<GradientStop Color="#FF596580" Offset="1"/>
+				</LinearGradientBrush>
+			</Menu.Background>
+			<MenuItem Header="Файл" FontSize="13.333">
+				<MenuItem Header="Відкрити" Click="Menu_Open" HorizontalAlignment="Left" Width="144.506666666667"/>
+				<MenuItem Header="Зберегти" Click="Menu_Save" HorizontalAlignment="Left" Width="144.506666666667"/>
+				<Separator HorizontalAlignment="Left" Width="144.506666666667"/>
+				<MenuItem Header="Вихід" Click="Menu_Exit" HorizontalAlignment="Left" Width="144.506666666667"/>
+			</MenuItem>
+			<MenuItem Header="Допомога" FontSize="13.333"/>
+			<MenuItem Header="Про програму" FontSize="13.333"/>
+		</Menu>
+        <Button Style="{StaticResource BackButton}" Content="Назад" Height="27" VerticalAlignment="Top" RenderTransformOrigin="0.174,0.057" Click="Button_Click_3" HorizontalAlignment="Right" Width="80" FontSize="14.667" FontWeight="Bold" FontFamily="Segoe UI" />        
+	</Grid>
+</Window>

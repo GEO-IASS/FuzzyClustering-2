@@ -1,0 +1,46 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="MainButton" TargetType="Button">
+        <Setter Property="Control.Background">
+            <Setter.Value>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FF426393" Offset="0.984"/>
+                    <GradientStop Color="#FF448C93" Offset="0.763"/>
+                    <GradientStop Color="#FFD2E4E6" Offset="0.676"/>
+                    <GradientStop Color="#FF00A5B8" Offset="0.089"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="#FFAA2D29" />
+                <Setter Property="Cursor" Value="Hand"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="BackButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <ControlTemplate.Resources>
+                        <Style x:Key="ShadowStyle">
+                            <Setter Property="Control.Foreground" Value="Black" />
+                        </Style>
+                    </ControlTemplate.Resources>
+                    <Border Name="border" Background="{x:Null}">
+                        <Grid  Cursor="Hand">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Name="contentShadow" Style="{StaticResource ShadowStyle}"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Name="content"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="#FF590000" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

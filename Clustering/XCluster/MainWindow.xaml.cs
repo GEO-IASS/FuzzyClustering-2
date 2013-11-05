@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Encog.App.Quant.Loader.OpenQuant.Data;
 using XCluster.View;
+using XCluster.ViewModel;
 
 namespace XCluster
 {
@@ -21,6 +23,7 @@ namespace XCluster
     /// </summary>
     public partial class MainWindow : Window
     {
+        public List<double[]> Data; 
         private CluteringResult windowCluteringResult;
         public MainWindow()
         {
@@ -29,26 +32,51 @@ namespace XCluster
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            windowCluteringResult = new CluteringResult();
+            windowCluteringResult = new CluteringResult(this);
             windowCluteringResult.Show();
+            this.Hide();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            windowCluteringResult = new CluteringResult(2);
+            windowCluteringResult = new CluteringResult(this,2);
             windowCluteringResult.Show();
+            this.Hide();
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            windowCluteringResult = new CluteringResult(3);
+            windowCluteringResult = new CluteringResult(this,3);
             windowCluteringResult.Show();
+            this.Hide();
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            var imageWindow = new ClusterImage();
+            var imageWindow = new ClusterImage(this);
             imageWindow.Show();
+            this.Hide();
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            var dataEditWindow = new DataEdit(this);
+            dataEditWindow.Show();
+            this.Hide();
+        }
+
+        private void Menu_Exit(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+        private void Menu_Save(object sender, RoutedEventArgs e)
+        {
+            SOperation.WriteFile(Data);
+        }
+
+        private void Menu_Open(object sender, RoutedEventArgs e)
+        {
+            SOperation.ReadFile();
         }
     }
 }

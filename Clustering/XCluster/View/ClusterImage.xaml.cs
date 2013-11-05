@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using XCluster.Model;
+using XCluster.ViewModel;
 
 namespace XCluster.View
 {
@@ -19,66 +20,40 @@ namespace XCluster.View
     public partial class ClusterImage : Window
     {
 
-        public System.Drawing.Bitmap sourceImage;
-        public System.Drawing.Bitmap filteredImage;
-        public System.Drawing.Bitmap originalImage;
+        public Bitmap sourceImage;
+        public Bitmap filteredImage;
+        public Bitmap originalImage;
+        private MainWindow parentWindow;
 
         private BackgroundWorker backgroundWorker;
         public Stopwatch stopWatch;
 
-        public ClusterImage()
+        public ClusterImage(MainWindow parent)
         {
             InitializeComponent();
+            this.parentWindow = parent;
             backgroundWorker = new BackgroundWorker();
             stopWatch = new Stopwatch();
+            backgroundWorker.WorkerSupportsCancellation = true;
             backgroundWorker.DoWork += backgroundWorker1_DoWork;
+            backgroundWorker.RunWorkerCompleted += (sender, args) =>
+                                                        {
+                                                            StartClustering.IsEnabled = true;
+                                                            UploadImage.IsEnabled = true;
+                                                            StopClustering.IsEnabled = false;
+                                                        };
         }
-
         
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                try
-                {
-                    using (var memory = new MemoryStream())
-                    {
-                        var bitmap = new Bitmap(openFileDialog.FileName);
-                        sourceImage = (Bitmap)bitmap.Clone();
-                        originalImage = (Bitmap)bitmap.Clone();
-                        bitmap.Save(memory, ImageFormat.Bmp);
-                        memory.Position = 0;
-                        var bitmapImage = new BitmapImage();
-                        bitmapImage.BeginInit();
-                        bitmapImage.StreamSource = memory;
-                        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                        bitmapImage.EndInit();
-                        FImage.Source = bitmapImage;
-                    }
-                   
-                }
-                catch (NotSupportedException ex)
-                {
-                    System.Windows.Forms.MessageBox.Show("Image format is not supported: " + ex.Message, "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (ArgumentException ex)
-                {
-                    System.Windows.Forms.MessageBox.Show("Invalid image: " + ex.Message, "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch
-                {
-                    System.Windows.Forms.MessageBox.Show("Failed loading the image", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-
+            OpenImage();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            StartClustering.IsEnabled = false;
+            UploadImage.IsEnabled = false;
+            StopClustering.IsEnabled = true;
             stopWatch.Reset();
             stopWatch.Start();
             backgroundWorker.RunWorkerAsync();
@@ -157,6 +132,83 @@ namespace XCluster.View
 
             var result = Color.FromArgb((int)data[0],(int)data[1], (int)data[2]);
             return result;
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            parentWindow.Show();
+            this.Closed -= Window_Closed;
+            this.Close();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            parentWindow.Close();
+        }
+
+        private void Menu_Exit(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void Menu_Save(object sender, RoutedEventArgs e)
+        {
+            OpenImage();
+        }
+
+        private void Menu_Open(object sender, RoutedEventArgs e)
+        {
+            OpenImage();
+        }
+
+        private void OpenImage()
+        {
+            var openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    using (var memory = new MemoryStream())
+                    {
+                        var bitmap = new Bitmap(openFileDialog.FileName);
+                        sourceImage = (Bitmap)bitmap.Clone();
+                        originalImage = (Bitmap)bitmap.Clone();
+                        bitmap.Save(memory, ImageFormat.Bmp);
+                        memory.Position = 0;
+                        var bitmapImage = new BitmapImage();
+                        bitmapImage.BeginInit();
+                        bitmapImage.StreamSource = memory;
+                        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmapImage.EndInit();
+                        FImage.Source = bitmapImage;
+                        StartClustering.IsEnabled = true;
+                    }
+
+                }
+                catch (NotSupportedException ex)
+                {
+                    System.Windows.Forms.MessageBox.Show("Image format is not supported: " + ex.Message, "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (ArgumentException ex)
+                {
+                    System.Windows.Forms.MessageBox.Show("Invalid image: " + ex.Message, "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch
+                {
+                    System.Windows.Forms.MessageBox.Show("Failed loading the image", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void StopClustering_Click(object sender, RoutedEventArgs e)
+        {
+            if (backgroundWorker != null)
+            {
+                backgroundWorker.CancelAsync();
+            }
         }
     }
 }

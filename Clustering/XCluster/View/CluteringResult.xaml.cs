@@ -27,11 +27,14 @@ namespace XCluster.View
         private int defaultClusterCount = 2;
         private int method;
         private List<double[]> data = Data;
+        private MainWindow parentWindow;
+
         public ZedGraphUserControl zdg { get; set; }
-        public CluteringResult(int method = 1)
+        public CluteringResult(MainWindow parent, int method = 1)
         {
-            this.method = method;
             InitializeComponent();
+            this.method = method;
+            this.parentWindow = parent;
         }
 
         private void Window_Loaded_1(object sender, RoutedEventArgs e)
@@ -40,7 +43,7 @@ namespace XCluster.View
             
             zdg.AddClickEvent(zdg_Click);
             zdg.MouseClick += zdg_Click;
-            //Resize ZedGraph COntrol.
+            
             grdHost.SizeChanged += (o, args) =>
             {
                 var gr = o as WindowsFormsHost;
@@ -49,8 +52,6 @@ namespace XCluster.View
             };
             grdHost.Child = zdg;
         }
-
-     
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -148,6 +149,32 @@ namespace XCluster.View
                     zdg.BuildGraph(kmean.GetClusters(clusterCount ?? defaultClusterCount));
                     break;
             }    
+        }
+
+        private void Back(object sender, RoutedEventArgs e)
+        {
+            parentWindow.Show();
+            this.Closed -= Window_Closed;
+            this.Close();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            parentWindow.Close();
+        }
+
+        private void Menu_Exit(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+        private void Menu_Save(object sender, RoutedEventArgs e)
+        {
+            SOperation.WriteFile(Data);
+        }
+
+        private void Menu_Open(object sender, RoutedEventArgs e)
+        {
+            SOperation.ReadFile();
         }
            
         

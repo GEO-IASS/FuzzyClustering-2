@@ -2,22 +2,52 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="XCluster.View.ClusterImage"
-        Title="ClusterImage" Height="542" Width="845.2">
+        Title="Clustering" Height="571" Width="810" MinHeight="550" MinWidth="800" Closed="Window_Closed"
+        Icon="../Resource/Icon/icon.ico" >
 	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="195*"/>
+			<RowDefinition Height="346*"/>
+		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition/>
+			<ColumnDefinition Width="40*"/>
+			<ColumnDefinition Width="40*"/>
 		</Grid.ColumnDefinitions>
-		<Image x:Name="FImage" HorizontalAlignment="Left" Height="262" Margin="20,172,0,0" VerticalAlignment="Top" Width="301"/>
-		<Image x:Name="RImage" HorizontalAlignment="Left" Height="262" Margin="431,172,0,0" VerticalAlignment="Top" Width="288"/>
-		<Button Content="Button" HorizontalAlignment="Left" Height="36" Margin="24,19,0,0" VerticalAlignment="Top" Width="179" Click="Button_Click"/>
-		<Button Content="Button" HorizontalAlignment="Left" Height="30" Margin="24,63,0,0" VerticalAlignment="Top" Width="179" Click="Button_Click_1"/>
-		<Label Content="Кількість кластерів" HorizontalAlignment="Left" Height="38" Margin="249,17,0,0" VerticalAlignment="Top" Width="144"/>
-		<Label Content="Максимум ітерацій" HorizontalAlignment="Left" Height="28" Margin="249,54,0,0" VerticalAlignment="Top" Width="144"/>
-		<Label Content="Точність" HorizontalAlignment="Left" Height="38" Margin="249,87,0,0" VerticalAlignment="Top" Width="144"/>
+		<Image x:Name="FImage" Margin="10" Grid.Row="1"/>
+		<Image x:Name="RImage" Margin="10" Grid.Column="1" Grid.Row="1"/>
+		<Grid Margin="35,39.253,24,15">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="4*"/>
+				<RowDefinition Height="4*"/>
+				<RowDefinition Height="4*"/>
+			</Grid.RowDefinitions>
+			<Button x:Name="UploadImage" Content="Завантажити картинку" Click="Button_Click" FontSize="14.667" Margin="0,6,0,3"/>
+			<Button x:Name="StartClustering" IsEnabled="False" Content="Розпочати кластеризацію" Margin="0,4,0,5" Click="Button_Click_1" FontSize="14.667" Grid.Row="1"/>
+			<Button x:Name="StopClustering" IsEnabled="False" Content="Зупинити кластеризацію" Margin="0,3,0,6" FontSize="14.667" Grid.Row="2" Click="StopClustering_Click"/>
+		</Grid>
+		<Label Content="Кількість кластерів" Margin="19,46,0,0" FontSize="14.667" Grid.Column="1" Height="38" VerticalAlignment="Top" HorizontalAlignment="Left" Width="144"/>
+		<Label Content="Максимум ітерацій" Margin="19,94,0,0" FontSize="14.667" Grid.Column="1" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="144"/>
+		<Label Content="Точність" Margin="19,142,0,0" FontSize="14.667" Grid.Column="1" Height="38" VerticalAlignment="Top" HorizontalAlignment="Left" Width="144"/>
         
-		<xctk:IntegerUpDown x:Name="ClusterCount" Margin="398,17,380.2,0" VerticalAlignment="Top" Height="21"  Value="2" DefaultValue="2" Minimum="1" FontSize="14.667" />
-		<xctk:IntegerUpDown x:Name="IterationCount" Margin="398,54,380.2,0" VerticalAlignment="Top" Height="28"  Value="2" DefaultValue="2" Minimum="1" FontSize="14.667" />
-		<Button Content="Button" HorizontalAlignment="Left" Height="28" Margin="25,106,0,0" VerticalAlignment="Top" Width="178"/>
-        <xctk:DoubleUpDown x:Name="Prescision" Margin="398,91,380.2,0" VerticalAlignment="Top" Height="24" Increment="0.0001"  Value="0.0001" DefaultValue="0.0001" Minimum="0.00000001" FontSize="14.667"  ></xctk:DoubleUpDown>
+		<xctk:IntegerUpDown x:Name="ClusterCount" Margin="197,46,0,0"  Value="2" DefaultValue="2" Minimum="1" FontSize="14.667" Grid.Column="1" Height="43" VerticalAlignment="Top" HorizontalAlignment="Left" Width="92.8" />
+		<xctk:IntegerUpDown x:Name="IterationCount" Margin="197,94,0,0"  Value="2" DefaultValue="2" Minimum="1" FontSize="14.667" Grid.Column="1" Height="43" VerticalAlignment="Top" HorizontalAlignment="Left" Width="92.8" />
+        <xctk:DoubleUpDown x:Name="Prescision" Margin="197,142,0,0" Increment="0.0001"  Value="0.0001" DefaultValue="0.0001" Minimum="0.00000001" FontSize="14.667" Grid.Column="1" Height="43" VerticalAlignment="Top" HorizontalAlignment="Left" Width="92.8"  />
+        <Menu Height="28" VerticalAlignment="Top" Width="Auto" Margin="0" HorizontalAlignment="Stretch" Grid.ColumnSpan="2">
+        	<Menu.Background>
+        		<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+        			<GradientStop Color="#FFC1BEB8"/>
+        			<GradientStop Color="#FF596580" Offset="1"/>
+        		</LinearGradientBrush>
+        	</Menu.Background>
+        	<MenuItem Header="Файл" FontSize="13.333">
+        		<MenuItem Header="Відкрити" Click="Menu_Open" HorizontalAlignment="Left" Width="144.506666666667"/>
+        		<MenuItem Header="Зберегти" Click="Menu_Save" HorizontalAlignment="Left" Width="144.506666666667"/>
+        		<Separator HorizontalAlignment="Left" Width="144.506666666667"/>
+        		<MenuItem Header="Вихід" Click="Menu_Exit" HorizontalAlignment="Left" Width="144.506666666667"/>
+        	</MenuItem>
+        	<MenuItem Header="Допомога" FontSize="13.333"/>
+        	<MenuItem Header="Про програму" FontSize="13.333"/>
+        </Menu>
+		<Button Style="{StaticResource BackButton}" Content="Назад" Grid.Column="1" Height="27" VerticalAlignment="Top" Click="Button_Click_2" HorizontalAlignment="Right" Width="80" FontSize="14.667" FontWeight="Bold"/>
     </Grid>
 </Window>

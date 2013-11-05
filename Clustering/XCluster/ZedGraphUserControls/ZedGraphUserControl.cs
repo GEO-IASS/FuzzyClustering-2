@@ -50,16 +50,16 @@ namespace ZedGraphUserControls
             GraphPane myPane = zgc.GraphPane;
 
             // Set the Titles
-            myPane.Title.Text = "My Test Graph\n(For CodeProject Sample)";
-            myPane.XAxis.Title.Text = "My X Axis";
-            myPane.YAxis.Title.Text = "My Y Axis";
+            myPane.Title.Text = "Кластеризація";
+            myPane.XAxis.Title.Text = "X";
+            myPane.YAxis.Title.Text = "Y";
             myPane.XAxis.Scale.MajorStep = 5;
 
             // Make up some data arrays based on the Sine function
             double x, y1, y2;
-            PointPairList list1 = new PointPairList();
-            PointPairList list2 = new PointPairList();
-            for (int i = 0; i < 36; i++)
+            var list1 = new PointPairList();
+            var list2 = new PointPairList();
+            for (var i = 0; i < 36; i++)
             {
                 x = (double)i + 5;
                 y1 = 1.5 + Math.Sin((double)i * 0.2);
@@ -70,13 +70,15 @@ namespace ZedGraphUserControls
 
             // Generate a red curve with diamond
             // symbols, and "Porsche" in the legend
-            LineItem myCurve = myPane.AddCurve("Porsche",
+            var myCurve = myPane.AddCurve("",
                   list1, System.Drawing.Color.Red, SymbolType.Diamond);
+            myCurve.Line.IsVisible = false;
 
             // Generate a blue curve with circle
             // symbols, and "Piper" in the legend
-            LineItem myCurve2 = myPane.AddCurve("Piper",
+            var myCurve2 = myPane.AddCurve("",
                   list2, System.Drawing.Color.Blue, SymbolType.Circle);
+            myCurve2.Line.IsVisible = false;
 
             // Tell ZedGraph to refigure the
             // axes since the data have changed

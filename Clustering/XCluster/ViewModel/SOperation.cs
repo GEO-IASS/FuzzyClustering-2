@@ -42,8 +42,9 @@ namespace XCluster.ViewModel
             for (var i = 0; i < input.Count; i++)
             {
                 var tmp = input[i].Split(';');
-                result.Add(new double[tmp.Count()]);
-                for (var j = 0; j < tmp.Count(); j++)
+                var count = String.IsNullOrEmpty(tmp[tmp.Count() - 1]) ? tmp.Count() - 1 : tmp.Count();
+                result.Add(new double[count]);
+                for (var j = 0; j < count; j++)
                 {
                     if (!Double.TryParse(tmp[j], out result[i][j]))
                         return null;
